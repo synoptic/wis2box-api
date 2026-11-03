@@ -112,10 +112,9 @@ class Cap2geojsonProcessor(BaseProcessor):
                 # replace the public URL with the internal minio URL
                 LOGGER.debug('Replacing STORAGE_PUBLIC_URL with internal storage URL')  # noqa
                 # replace the public URL with the internal storage URL
-                # The public bucket name is operator-chosen; S3 names are globally
-                # unique so it is never the literal 'wis2box-public'. env.py already
-                # exposes STORAGE_PUBLIC -- upstream imports it elsewhere but hardcodes
-                # the literal here, which 404s against any real bucket.
+                # The public bucket name is operator-chosen and globally
+                # unique, so it is never the literal 'wis2box-public'.
+                # env.py exposes it; the literal 404s on a real bucket.
                 data_url = data_url.replace(STORAGE_PUBLIC_URL, f'{STORAGE_SOURCE}/{STORAGE_PUBLIC}')  # noqa
                 LOGGER.debug(f'Executing cap2geojson on: {data_url}')
                 # read the data from the URL

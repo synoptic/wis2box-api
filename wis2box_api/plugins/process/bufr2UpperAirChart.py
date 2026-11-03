@@ -266,10 +266,9 @@ class Bufr2UpperAirChartProcessor(BaseProcessor):
         if url:
             # Convert public URL to internal storage path
             if url.startswith(STORAGE_PUBLIC_URL):
-                # The public bucket name is operator-chosen; S3 names are globally
-                # unique so it is never the literal 'wis2box-public'. env.py already
-                # exposes STORAGE_PUBLIC -- upstream imports it elsewhere but hardcodes
-                # the literal here, which 404s against any real bucket.
+                # The public bucket name is operator-chosen and globally
+                # unique, so it is never the literal 'wis2box-public'.
+                # env.py exposes it; the literal 404s on a real bucket.
                 url = url.replace(STORAGE_PUBLIC_URL, f'{STORAGE_SOURCE}/{STORAGE_PUBLIC}')  # noqa
             # get the BUFR data from the URL
             response = requests.get(url)
