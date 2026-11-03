@@ -26,6 +26,7 @@ from pygeoapi.process.base import BaseProcessor
 from cap2geojson import transform as as_geojson
 
 from wis2box_api.wis2box.env import STORAGE_PUBLIC_URL, STORAGE_SOURCE
+from wis2box_api.wis2box.env import STORAGE_PUBLIC
 
 LOGGER = logging.getLogger(__name__)
 
@@ -111,7 +112,11 @@ class Cap2geojsonProcessor(BaseProcessor):
                 # replace the public URL with the internal minio URL
                 LOGGER.debug('Replacing STORAGE_PUBLIC_URL with internal storage URL')  # noqa
                 # replace the public URL with the internal storage URL
-                data_url = data_url.replace(STORAGE_PUBLIC_URL, f'{STORAGE_SOURCE}/wis2box-public')  # noqa
+                # The public bucket name is operator-chosen; S3 names are globally
+                # unique so it is never the literal 'wis2box-public'. env.py already
+                # exposes STORAGE_PUBLIC -- upstream imports it elsewhere but hardcodes
+                # the literal here, which 404s against any real bucket.
+                data_url = data_url.replace(STORAGE_PUBLIC_URL, f'{STORAGE_SOURCE}/{STORAGE_PUBLIC}')  # noqa
                 LOGGER.debug(f'Executing cap2geojson on: {data_url}')
                 # read the data from the URL
                 result = requests.get(data_url)

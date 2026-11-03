@@ -40,6 +40,7 @@ from eccodes import (
 )
 
 from wis2box_api.wis2box.env import STORAGE_PUBLIC_URL, STORAGE_SOURCE
+from wis2box_api.wis2box.env import STORAGE_PUBLIC
 
 # 👇 This registers the projection globally with matplotlib
 from wis2box_api.projections.skewt_projection import SkewXAxes
@@ -265,7 +266,11 @@ class Bufr2UpperAirChartProcessor(BaseProcessor):
         if url:
             # Convert public URL to internal storage path
             if url.startswith(STORAGE_PUBLIC_URL):
-                url= url.replace(STORAGE_PUBLIC_URL, f'{STORAGE_SOURCE}/wis2box-public') # noqa
+                # The public bucket name is operator-chosen; S3 names are globally
+                # unique so it is never the literal 'wis2box-public'. env.py already
+                # exposes STORAGE_PUBLIC -- upstream imports it elsewhere but hardcodes
+                # the literal here, which 404s against any real bucket.
+                url = url.replace(STORAGE_PUBLIC_URL, f'{STORAGE_SOURCE}/{STORAGE_PUBLIC}')  # noqa
             # get the BUFR data from the URL
             response = requests.get(url)
             response.raise_for_status()
