@@ -1,3 +1,4 @@
 docker_compose_test/*
 .github/*
 .gitignore
+.git
